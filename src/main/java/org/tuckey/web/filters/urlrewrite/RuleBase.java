@@ -34,6 +34,15 @@
  */
 package org.tuckey.web.filters.urlrewrite;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.tuckey.web.filters.urlrewrite.extend.RewriteMatch;
 import org.tuckey.web.filters.urlrewrite.substitution.BackReferenceReplacer;
 import org.tuckey.web.filters.urlrewrite.substitution.ChainedSubstitutionFilters;
@@ -48,15 +57,6 @@ import org.tuckey.web.filters.urlrewrite.utils.StringMatchingPattern;
 import org.tuckey.web.filters.urlrewrite.utils.StringMatchingPatternSyntaxException;
 import org.tuckey.web.filters.urlrewrite.utils.StringUtils;
 import org.tuckey.web.filters.urlrewrite.utils.WildcardPattern;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Defines a rule that can be run against an incoming request.
@@ -222,6 +222,10 @@ public class RuleBase implements Runnable {
             for (int i = 0; i < runsSize; i++) {
                 Run run = (Run) runs.get(i);
                 lastRunMatch = run.execute(hsRequest, hsResponse, matcher, lastConditionMatch, chain);
+                // if we've already sent off the response, don't bo
+                if (hsResponse.isCommitted()) {
+                    break;
+                }
             }
         }
 
