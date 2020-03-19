@@ -1,3 +1,4 @@
+Notes(jeremy): this is a fork of urlrewrite filter to fix an issue where we will run all the filters if the response is already committed. The current changes are in branch-v4: https://github.com/pepperdata/urlrewritefilter/tree/branch-v4
 
 # UrlRewriteFilter
 
